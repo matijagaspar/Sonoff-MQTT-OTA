@@ -14,10 +14,10 @@
 #define STA_TYPE            AUTH_WPA2_PSK
 
 // Ota
-#define OTA_URL             "http://sidnas2:80/api/"PROJECT"/user1.bin"
+#define OTA_URL             "http://esp-dev:80/api/"PROJECT"/user1.bin"
 
 // MQTT
-#define MQTT_HOST           "sidnas2"
+#define MQTT_HOST           "kiichigo"
 #define MQTT_PORT           1883
 #define DEFAULT_SECURITY    0
 
@@ -26,8 +26,8 @@
 #define MQTT_PASS           "DVES_PASS"
 #define MQTT_KEEPALIVE      120          // seconds
 
-#define MQTT_GRPTOPIC       PROJECT"s"   // Group topic
-#define MQTT_TOPIC          PROJECT
+#define MQTT_GRPTOPIC       "home/allrooms/light"   // Group topic
+#define MQTT_TOPIC          "home/bedroom/light"
 #define SUB_PREFIX          "cmnd"
 #define PUB_PREFIX          "stat"
 

@@ -121,7 +121,7 @@ mqttDataCb(uint32_t *args, const char* topic, uint32_t topic_len, const char *da
   os_memcpy(topicBuf, topic, topic_len);
   topicBuf[topic_len] = 0;
   i = 0;
-  for (str = strtok_r(topicBuf, "/", &p); str && i < 3; str = strtok_r(NULL, "/", &p))
+  for (str = strtok_r(topicBuf, "/", &p); str /*&& i < 3;*/; str = strtok_r(NULL, "/", &p))
   {
     switch (i) {
     case 0:  // CMND
@@ -131,6 +131,13 @@ mqttDataCb(uint32_t *args, const char* topic, uint32_t topic_len, const char *da
       break;
     case 2:  // TEXT
       type = str;
+      break;
+    case 3: //for 3 level topic. TODO: make it nicer, and for any level!
+        os_sprintf(mtopic, "%s/%s/%s",mtopic, type,str);
+        break;
+    case 4:
+        type = str;
+        break;
     }
     i++;
   }
@@ -146,7 +153,6 @@ mqttDataCb(uint32_t *args, const char* topic, uint32_t topic_len, const char *da
   if (type != NULL) {
     blinks = 2;
     os_sprintf(stopic, "%s/%s/%s", PUB_PREFIX, sysCfg.mqtt_topic, type);
-//    os_sprintf(stopic, "%s/%s/%s", PUB_PREFIX, mtopic, type);
     strcpy(svalue, "Error");
 
     uint16_t payload = atoi(dataBuf);
@@ -271,7 +277,6 @@ mqttDataCb(uint32_t *args, const char* topic, uint32_t topic_len, const char *da
       blinks = 1;
       INFO("*** Syntax error \r\n");
       os_sprintf(stopic, "%s/%s/SYNTAX", PUB_PREFIX, sysCfg.mqtt_topic);
-//      os_sprintf(stopic, "%s/%s/SYNTAX", PUB_PREFIX, mtopic);
       if (!grpflg)
         strcpy(svalue, "Status, Upgrade, Otaurl, Restart, Reset, Smartconfig, SSId, Password, Host, GroupTopic, Topic, Timezone, Light, Power");
       else
@@ -428,7 +433,7 @@ user_init(void)
   MQTT_OnConnected(&mqttClient, mqttConnectedCb);
   MQTT_OnData(&mqttClient, mqttDataCb);
 
-  WIFI_Connect(sysCfg.sta_ssid, sysCfg.sta_pwd, sysCfg.mqtt_topic, wifiConnectCb);
+  WIFI_Connect(sysCfg.sta_ssid, sysCfg.sta_pwd, MQTT_CLIENT_ID, wifiConnectCb);
 
   PIN_FUNC_SELECT(REL_MUX, REL_FUNC);
   GPIO_OUTPUT_SET(REL_PIN, sysCfg.power);

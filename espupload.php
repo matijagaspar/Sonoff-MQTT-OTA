@@ -7,7 +7,7 @@
 // var_dump($argv);
 
 //$host = "deb8gui";
-$host = "sidnas2";
+$host = "esp-dev";
 
 $application = $argv[2]; // "mqttota"
 $version = $argv[4];     // "0.0.2"
